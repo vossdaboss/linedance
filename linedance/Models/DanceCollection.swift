@@ -85,6 +85,38 @@ struct DanceCollection {
                     imageSystemName: "info.circle"
                 )
             ]
+        ),
+        Dance(
+            name: "Party In The Hills",
+            artist: "Why Don't We",
+            description: "A high-energy 32-count, 2-wall advanced line dance choreographed by Fred Whitehouse, Shane McKeever & Joey Warren (September 2019)",
+            difficulty: .advanced,
+            steps: [
+                DanceStep(
+                    name: "Body Roll & Coaster Sequence",
+                    description: "1-2: Body roll with L step forward\n2&3: Step back R, L next to R, step R forward\n4&5: Kick L forward, step L down, step R to right\n6&7&: Step L behind R, R to right, cross rock L over R, recover R\n8&1: Step L to left, touch R next to L, heavy step R to right",
+                    stepNumber: 1,
+                    imageSystemName: "figure.walk"
+                ),
+                DanceStep(
+                    name: "Turn Combination",
+                    description: "2&3: L behind R, ¼ turn R stepping R forward, step L forward\n4&5: Full turn R (½ turn R to R, ½ turn R to L), step back R\n6&7&: Step L back/out, R back, cross L over R, R back slightly\n8&1: ½ turn L stepping L forward, ¼ turn L touch R beside L, lean/press R to right",
+                    stepNumber: 2,
+                    imageSystemName: "arrow.clockwise.circle"
+                ),
+                DanceStep(
+                    name: "Cross & Turn Pattern",
+                    description: "2-3&4: Recover to L with R flick, cross shuffle R,L,R\n5-6: Slide L to left, ¼ turn L stepping R to right\n7&8: ¾ turn L stepping L behind R, step R in place, step L forward",
+                    stepNumber: 3,
+                    imageSystemName: "arrow.triangle.turn.up.right.circle"
+                ),
+                DanceStep(
+                    name: "Grind & Rock Sequence",
+                    description: "&12&: Ball step R next to L, grind L heel forward, recover R\n3&4&: Rock R forward, recover L, rock R side, recover L\n5-6-7: Back R sweep L, back L sweep R, back R pop L knee forward (prep for turn)\n8&1: Step L forward, ½ turn L stepping R back, ½ turn L stepping L forward",
+                    stepNumber: 4,
+                    imageSystemName: "arrow.left.and.right.circle"
+                )
+            ]
         )
     ]
 } 
