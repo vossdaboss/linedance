@@ -6,27 +6,22 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct linedanceApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                ContentView()
+            }
+            .onAppear {
+                // Ensure proper memory management for navigation
+                let navigationBarAppearance = UINavigationBarAppearance()
+                navigationBarAppearance.configureWithDefaultBackground()
+                UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+                UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+                UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }

@@ -6,6 +6,7 @@ struct DanceCollection {
             name: "Boot Scootin' Boogie",
             artist: "Brooks & Dunn",
             description: "A classic line dance perfect for beginners!",
+            difficulty: .beginner,
             steps: [
                 DanceStep(name: "Grapevine Right", 
                          description: "Step right with right foot, cross left foot behind, step right with right foot, touch left foot next to right",
@@ -25,6 +26,7 @@ struct DanceCollection {
             name: "Achy Breaky Heart",
             artist: "Billy Ray Cyrus",
             description: "An energetic line dance that swept the nation!",
+            difficulty: .beginner,
             steps: [
                 DanceStep(name: "Vine Right", 
                          description: "Step right, cross behind, step right, touch left",
@@ -41,6 +43,7 @@ struct DanceCollection {
             name: "American Kids",
             artist: "Kenny Chesney",
             description: "A high beginner 32-count, 4-wall line dance choreographed by Randy Pelletier (June 2014)",
+            difficulty: .highBeginner,
             steps: [
                 // Section 1: Heels and Walks (Counts 1-8)
                 DanceStep(
