@@ -46,46 +46,11 @@ struct DanceMenuView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Difficulty Filter Pills
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            FilterPill(title: "All", isSelected: selectedDifficulty == nil) {
-                                selectedDifficulty = nil
-                            }
-                            
-                            ForEach(difficulties, id: \.self) { difficulty in
-                                FilterPill(
-                                    title: difficulty.rawValue,
-                                    isSelected: selectedDifficulty == difficulty,
-                                    color: difficulty.color
-                                ) {
-                                    selectedDifficulty = difficulty
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    .padding(.top, 8)
-                    
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 16) {
-                        ForEach(displayedDances) { dance in
-                            NavigationLink(destination: DanceTutorialView(dance: dance)) {
-                                DanceCard(dance: dance)
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-            .scrollIndicators(.hidden)
-            .background(Color(hex: "121212").ignoresSafeArea())
-            .navigationTitle("Line Dances")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+        ScrollView {
+            VStack(spacing: 16) {
+                // Add sort menu at the top
+                HStack {
+                    Spacer()
                     Menu {
                         Button {
                             sortOption = .name
@@ -124,12 +89,40 @@ struct DanceMenuView: View {
                             .foregroundColor(.white)
                     }
                 }
+                .padding(.horizontal)
+                
+                // Difficulty Filter Pills
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        FilterPill(title: "All", isSelected: selectedDifficulty == nil) {
+                            selectedDifficulty = nil
+                        }
+                        
+                        ForEach(difficulties, id: \.self) { difficulty in
+                            FilterPill(
+                                title: difficulty.rawValue,
+                                isSelected: selectedDifficulty == difficulty,
+                                color: difficulty.color
+                            ) {
+                                selectedDifficulty = difficulty
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 16) {
+                    ForEach(displayedDances) { dance in
+                        NavigationLink(destination: DanceTutorialView(dance: dance)) {
+                            DanceCard(dance: dance)
+                        }
+                    }
+                }
+                .padding(.horizontal)
             }
-            .toolbarBackground(Color(hex: "121212"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
         }
-        .navigationViewStyle(.stack)
-        .preferredColorScheme(.dark)
+        .scrollIndicators(.hidden)
+        .background(Color(hex: "121212"))
     }
 }
 
