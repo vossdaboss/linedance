@@ -46,82 +46,87 @@ struct DanceMenuView: View {
     ]
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                // Add sort menu at the top
-                HStack {
-                    Spacer()
-                    Menu {
-                        Button {
-                            sortOption = .name
-                        } label: {
-                            HStack {
-                                Text("Name (A-Z)")
-                                if sortOption == .name {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                        
-                        Button {
-                            sortOption = .steps
-                        } label: {
-                            HStack {
-                                Text("Steps (Low to High)")
-                                if sortOption == .steps {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                        
-                        Button {
-                            sortOption = .difficulty
-                        } label: {
-                            HStack {
-                                Text("Difficulty")
-                                if sortOption == .difficulty {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
+        VStack(spacing: 0) {
+            // Fixed top section with sort menu
+            HStack {
+                Spacer()
+                Menu {
+                    Button {
+                        sortOption = .name
                     } label: {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
-                            .foregroundColor(.white)
-                    }
-                }
-                .padding(.horizontal)
-                
-                // Difficulty Filter Pills
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        FilterPill(title: "All", isSelected: selectedDifficulty == nil) {
-                            selectedDifficulty = nil
+                        HStack {
+                            Text("Name (A-Z)")
+                            if sortOption == .name {
+                                Image(systemName: "checkmark")
+                            }
                         }
-                        
-                        ForEach(difficulties, id: \.self) { difficulty in
-                            FilterPill(
-                                title: difficulty.rawValue,
-                                isSelected: selectedDifficulty == difficulty,
-                                color: difficulty.color
-                            ) {
-                                selectedDifficulty = difficulty
+                    }
+                    
+                    Button {
+                        sortOption = .steps
+                    } label: {
+                        HStack {
+                            Text("Steps (Low to High)")
+                            if sortOption == .steps {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                    
+                    Button {
+                        sortOption = .difficulty
+                    } label: {
+                        HStack {
+                            Text("Difficulty")
+                            if sortOption == .difficulty {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .foregroundColor(.white)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(hex: "121212"))
+            
+            // Scrollable content
+            ScrollView {
+                VStack(spacing: 16) {
+                    // Difficulty Filter Pills
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            FilterPill(title: "All", isSelected: selectedDifficulty == nil) {
+                                selectedDifficulty = nil
+                            }
+                            
+                            ForEach(difficulties, id: \.self) { difficulty in
+                                FilterPill(
+                                    title: difficulty.rawValue,
+                                    isSelected: selectedDifficulty == difficulty,
+                                    color: difficulty.color
+                                ) {
+                                    selectedDifficulty = difficulty
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 16) {
+                        ForEach(displayedDances) { dance in
+                            NavigationLink(destination: DanceTutorialView(dance: dance)) {
+                                DanceCard(dance: dance)
                             }
                         }
                     }
                     .padding(.horizontal)
                 }
-                
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 16) {
-                    ForEach(displayedDances) { dance in
-                        NavigationLink(destination: DanceTutorialView(dance: dance)) {
-                            DanceCard(dance: dance)
-                        }
-                    }
-                }
-                .padding(.horizontal)
             }
+            .scrollIndicators(.hidden)
         }
-        .scrollIndicators(.hidden)
         .background(Color(hex: "121212"))
     }
 }
