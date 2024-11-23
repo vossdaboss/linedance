@@ -2,22 +2,15 @@ import Foundation
 import SwiftUI
 
 final class DanceTutorialViewModel: ObservableObject {
-    @Published private(set) var currentStepIndex = 0
-    let dance: Dance
-    
-    var currentStep: DanceStep {
-        guard currentStepIndex < dance.steps.count else {
-            return dance.steps[0] // Fallback to first step if index is out of bounds
-        }
-        return dance.steps[currentStepIndex]
-    }
+    @Published var currentStep = 1
+    private let dance: Dance
     
     var canGoNext: Bool {
-        currentStepIndex < dance.steps.count - 1
+        currentStep < dance.steps.count
     }
     
     var canGoPrevious: Bool {
-        currentStepIndex > 0
+        currentStep > 1
     }
     
     init(dance: Dance) {
@@ -26,11 +19,11 @@ final class DanceTutorialViewModel: ObservableObject {
     
     func nextStep() {
         guard canGoNext else { return }
-        currentStepIndex += 1
+        currentStep += 1
     }
     
     func previousStep() {
         guard canGoPrevious else { return }
-        currentStepIndex -= 1
+        currentStep -= 1
     }
 } 

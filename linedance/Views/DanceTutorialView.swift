@@ -1,89 +1,130 @@
 import SwiftUI
 
 struct DanceTutorialView: View {
+    let dance: Dance
     @StateObject private var viewModel: DanceTutorialViewModel
     
     init(dance: Dance) {
-        self._viewModel = StateObject(wrappedValue: DanceTutorialViewModel(dance: dance))
+        self.dance = dance
+        _viewModel = StateObject(wrappedValue: DanceTutorialViewModel(dance: dance))
     }
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 // Header
-                VStack(spacing: 8) {
-                    Text(viewModel.dance.name)
-                        .font(.largeTitle)
-                        .bold()
+                VStack(spacing: 16) {
+                    Text(dance.name)
+                        .font(.title)
+                        .fontWeight(.bold)
                     
-                    Text(viewModel.dance.artist)
-                        .font(.title2)
-                        .foregroundColor(.secondary)
-                    
-                    // Difficulty badge
                     HStack {
-                        Image(systemName: viewModel.dance.difficulty.icon)
-                        Text(viewModel.dance.difficulty.rawValue)
-                    }
-                    .font(.subheadline)
-                    .foregroundColor(viewModel.dance.difficulty.color)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(viewModel.dance.difficulty.color.opacity(0.1))
-                    .cornerRadius(8)
-                }
-                
-                // Progress indicator
-                ProgressView(value: Double(viewModel.currentStepIndex + 1), total: Double(viewModel.dance.steps.count))
-                    .tint(viewModel.dance.difficulty.color)
-                    .padding(.horizontal)
-                
-                // Step Display
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        Image(systemName: viewModel.currentStep.imageSystemName)
-                            .font(.system(size: 40))
-                            .foregroundColor(viewModel.dance.difficulty.color)
+                        Text(dance.artist)
+                            .font(.title3)
+                            .foregroundColor(.secondary)
                         
-                        Text("Step \(viewModel.currentStep.stepNumber) of \(viewModel.dance.steps.count)")
-                            .font(.title)
+                        Spacer()
+                        
+                        DifficultyBadge(difficulty: dance.difficulty)
                     }
                     
-                    Text(viewModel.currentStep.name)
-                        .font(.title2)
-                        .bold()
-                    
-                    Text(viewModel.currentStep.description)
+                    Text(dance.description)
                         .font(.body)
+                        .foregroundColor(.secondary)
                         .multilineTextAlignment(.leading)
                 }
                 .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
-                .padding(.horizontal)
+                .background(Color(.systemBackground))
+                
+                // Current Step
+                if let currentStep = dance.steps.first(where: { $0.stepNumber == viewModel.currentStep }) {
+                    StepCard(step: currentStep, isCurrentStep: true)
+                }
                 
                 // Navigation Buttons
-                HStack(spacing: 40) {
+                HStack(spacing: 20) {
                     Button(action: viewModel.previousStep) {
-                        Image(systemName: "chevron.left.circle.fill")
-                            .font(.system(size: 44))
-                            .foregroundColor(viewModel.dance.difficulty.color)
+                        HStack {
+                            Image(systemName: "chevron.left")
+                            Text("Previous")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor.opacity(0.1))
+                        .foregroundColor(.accentColor)
+                        .cornerRadius(10)
                     }
                     .disabled(!viewModel.canGoPrevious)
-                    .opacity(viewModel.canGoPrevious ? 1.0 : 0.3)
+                    .opacity(viewModel.canGoPrevious ? 1.0 : 0.5)
                     
                     Button(action: viewModel.nextStep) {
-                        Image(systemName: "chevron.right.circle.fill")
-                            .font(.system(size: 44))
-                            .foregroundColor(viewModel.dance.difficulty.color)
+                        HStack {
+                            Text("Next")
+                            Image(systemName: "chevron.right")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
                     .disabled(!viewModel.canGoNext)
-                    .opacity(viewModel.canGoNext ? 1.0 : 0.3)
+                    .opacity(viewModel.canGoNext ? 1.0 : 0.5)
                 }
-                .padding()
+                .padding(.horizontal)
+                
+                // Step Progress
+                Text("Step \(viewModel.currentStep) of \(dance.steps.count)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
+            .padding(.vertical)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct StepCard: View {
+    let step: DanceStep
+    let isCurrentStep: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: step.imageSystemName)
+                    .font(.title2)
+                    .foregroundColor(.accentColor)
+                
+                Text(step.name)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                Text("Step \(step.stepNumber)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+            }
+            
+            Text(step.description)
+                .font(.body)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: isCurrentStep ? 4 : 2, y: isCurrentStep ? 2 : 1)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.accentColor, lineWidth: isCurrentStep ? 2 : 0)
+        )
+        .padding(.horizontal)
+        .scaleEffect(isCurrentStep ? 1.02 : 1.0)
+        .animation(.spring(), value: isCurrentStep)
     }
 } 
