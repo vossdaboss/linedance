@@ -17,11 +17,12 @@ struct DanceTutorialView: View {
                     Text(dance.name)
                         .font(.title)
                         .fontWeight(.bold)
+                        .foregroundColor(.white)
                     
                     HStack {
                         Text(dance.artist)
                             .font(.title3)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color(hex: "8E8E93"))
                         
                         Spacer()
                         
@@ -30,11 +31,11 @@ struct DanceTutorialView: View {
                     
                     Text(dance.description)
                         .font(.body)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(hex: "8E8E93"))
                         .multilineTextAlignment(.leading)
                 }
                 .padding()
-                .background(Color(.systemBackground))
+                .background(Color(hex: "121212"))
                 
                 // Current Step
                 if let currentStep = dance.steps.first(where: { $0.stepNumber == viewModel.currentStep }) {
@@ -50,8 +51,8 @@ struct DanceTutorialView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.accentColor.opacity(0.1))
-                        .foregroundColor(.accentColor)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundColor(.white)
                         .cornerRadius(10)
                     }
                     .disabled(!viewModel.canGoPrevious)
@@ -64,7 +65,13 @@ struct DanceTutorialView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.accentColor)
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(colors: [.blue, .purple]),
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -76,11 +83,11 @@ struct DanceTutorialView: View {
                 // Step Progress
                 Text("Step \(viewModel.currentStep) of \(dance.steps.count)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color(hex: "8E8E93"))
             }
             .padding(.vertical)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color(hex: "121212"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -94,34 +101,42 @@ struct StepCard: View {
             HStack {
                 Image(systemName: step.imageSystemName)
                     .font(.title2)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
                 
                 Text(step.name)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .foregroundColor(.white)
                 
                 Spacer()
                 
                 Text("Step \(step.stepNumber)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color(hex: "8E8E93"))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color(.systemGray6))
+                    .background(Color(hex: "121212"))
                     .cornerRadius(8)
             }
             
             Text(step.description)
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color(hex: "8E8E93"))
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(hex: "121212"))
         .cornerRadius(12)
         .shadow(radius: isCurrentStep ? 4 : 2, y: isCurrentStep ? 2 : 1)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.accentColor, lineWidth: isCurrentStep ? 2 : 0)
+                .stroke(
+                    LinearGradient(
+                        gradient: Gradient(colors: [.blue, .purple]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: isCurrentStep ? 2 : 0
+                )
         )
         .padding(.horizontal)
         .scaleEffect(isCurrentStep ? 1.02 : 1.0)

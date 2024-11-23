@@ -1,20 +1,135 @@
 import SwiftUI
 
 struct DanceMenuView: View {
+    @State private var selectedDifficulty: DanceDifficulty?
+    @State private var sortOption: SortOption = .name
+    
+    // Define sort options
+    enum SortOption {
+        case name
+        case steps
+        case difficulty
+    }
+    
+    // Break up the filtering and sorting logic
+    var displayedDances: [Dance] {
+        let filtered = filterDances(DanceCollection.dances)
+        return sortDances(filtered)
+    }
+    
+    // Separate function for filtering
+    private func filterDances(_ dances: [Dance]) -> [Dance] {
+        guard let difficulty = selectedDifficulty else {
+            return dances
+        }
+        return dances.filter { $0.difficulty == difficulty }
+    }
+    
+    // Separate function for sorting
+    private func sortDances(_ dances: [Dance]) -> [Dance] {
+        switch sortOption {
+        case .name:
+            return dances.sorted { $0.name < $1.name }
+        case .steps:
+            return dances.sorted { $0.steps.count < $1.steps.count }
+        case .difficulty:
+            return dances.sorted { $0.difficulty.rawValue < $1.difficulty.rawValue }
+        }
+    }
+    
+    // Define difficulties array
+    private let difficulties: [DanceDifficulty] = [
+        .beginner,
+        .highBeginner,
+        .intermediate,
+        .advanced
+    ]
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 12) {
-                    ForEach(DanceCollection.dances) { dance in
-                        NavigationLink(destination: DanceTutorialView(dance: dance)) {
-                            DanceCard(dance: dance)
+                VStack(spacing: 16) {
+                    // Difficulty Filter Pills
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            FilterPill(title: "All", isSelected: selectedDifficulty == nil) {
+                                selectedDifficulty = nil
+                            }
+                            
+                            ForEach(difficulties, id: \.self) { difficulty in
+                                FilterPill(
+                                    title: difficulty.rawValue,
+                                    isSelected: selectedDifficulty == difficulty,
+                                    color: difficulty.color
+                                ) {
+                                    selectedDifficulty = difficulty
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    .padding(.top, 8)
+                    
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 300, maximum: 400))], spacing: 16) {
+                        ForEach(displayedDances) { dance in
+                            NavigationLink(destination: DanceTutorialView(dance: dance)) {
+                                DanceCard(dance: dance)
+                            }
                         }
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal, 8)
             }
-            .navigationBarHidden(true)
+            .scrollIndicators(.hidden)
+            .background(Color(hex: "121212").ignoresSafeArea())
+            .navigationTitle("Line Dances")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            sortOption = .name
+                        } label: {
+                            HStack {
+                                Text("Name (A-Z)")
+                                if sortOption == .name {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                        
+                        Button {
+                            sortOption = .steps
+                        } label: {
+                            HStack {
+                                Text("Steps (Low to High)")
+                                if sortOption == .steps {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                        
+                        Button {
+                            sortOption = .difficulty
+                        } label: {
+                            HStack {
+                                Text("Difficulty")
+                                if sortOption == .difficulty {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            .toolbarBackground(Color(hex: "121212"), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
+        .navigationViewStyle(.stack)
+        .preferredColorScheme(.dark)
     }
 }
 
@@ -77,19 +192,14 @@ struct DanceCard: View {
 }
 
 struct DifficultyBadge: View {
-    let difficulty: Dance.Difficulty
+    let difficulty: DanceDifficulty
     
     var backgroundColor: Color {
-        switch difficulty {
-        case .beginner: return .green
-        case .highBeginner: return .blue
-        case .intermediate: return .orange
-        case .advanced: return .red
-        }
+        difficulty.color
     }
     
     var body: some View {
-        Text(difficulty.rawValue.capitalized)
+        Text(difficulty.rawValue)
             .font(.caption)
             .fontWeight(.medium)
             .padding(.horizontal, 8)
@@ -97,6 +207,33 @@ struct DifficultyBadge: View {
             .background(backgroundColor.opacity(0.2))
             .foregroundColor(backgroundColor)
             .cornerRadius(8)
+    }
+}
+
+// New component for filter pills
+struct FilterPill: View {
+    let title: String
+    let isSelected: Bool
+    var color: Color = .blue
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? color.opacity(0.2) : Color(hex: "1C1C1E"))
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(isSelected ? color : Color(hex: "48484A"), lineWidth: 1)
+                )
+                .foregroundColor(isSelected ? color : .white)
+        }
     }
 }
 
