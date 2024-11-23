@@ -8,8 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var authManager = AuthenticationManager()
+    
     var body: some View {
-        DanceMenuView()
+        Group {
+            if authManager.isLoading {
+                LoadingView()
+            } else if authManager.isAuthenticated {
+                DanceMenuView()
+            } else {
+                SignUpView()
+            }
+        }
+    }
+}
+
+struct LoadingView: View {
+    var body: some View {
+        VStack {
+            ProgressView()
+            Text("Loading...")
+                .padding(.top)
+        }
     }
 }
 
