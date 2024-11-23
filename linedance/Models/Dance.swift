@@ -8,4 +8,5 @@ struct Dance: Identifiable {
     let description: String
     let difficulty: DanceDifficulty
     let steps: [DanceStep]
+    let tutorialGifURL: URL?
 } 

@@ -20,7 +20,8 @@ struct DanceCollection {
                          description: "Split both heels out, bring them back together",
                          stepNumber: 3,
                          imageSystemName: "arrow.up.and.down")
-            ]
+            ],
+            tutorialGifURL: URL(string: "https://your-gif-url.com/boot-scootin-boogie.gif")
         ),
         Dance(
             name: "Achy Breaky Heart",
@@ -37,7 +38,8 @@ struct DanceCollection {
                          stepNumber: 2,
                          imageSystemName: "arrow.left")
                 // Add more steps
-            ]
+            ],
+            tutorialGifURL: URL(string: "https://your-gif-url.com/achy-breaky-heart.gif")
         ),
         Dance(
             name: "American Kids",
@@ -84,7 +86,8 @@ struct DanceCollection {
                     stepNumber: 5,
                     imageSystemName: "info.circle"
                 )
-            ]
+            ],
+            tutorialGifURL: URL(string: "https://your-gif-url.com/american-kids.gif")
         ),
         Dance(
             name: "Party In The Hills",
@@ -116,7 +119,8 @@ struct DanceCollection {
                     stepNumber: 4,
                     imageSystemName: "arrow.left.and.right.circle"
                 )
-            ]
+            ],
+            tutorialGifURL: URL(string: "https://your-gif-url.com/party-in-the-hills.gif")
         )
     ]
 } 
