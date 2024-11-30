@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject private var authManager = AuthenticationManager()
+    @EnvironmentObject var authManager: AuthenticationManager
     @Environment(\.dismiss) private var dismiss
     @State private var email = ""
     @State private var password = ""
@@ -86,6 +86,7 @@ struct SignUpView: View {
         
         do {
             try authManager.signUp(email: email, password: password)
+            dismiss()
         } catch {
             errorMessage = error.localizedDescription
             showingError = true

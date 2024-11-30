@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SignInView: View {
-    @StateObject private var authManager = AuthenticationManager()
+    @EnvironmentObject var authManager: AuthenticationManager
     @State private var email = ""
     @State private var password = ""
     @State private var showingError = false
