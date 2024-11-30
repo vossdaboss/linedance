@@ -12,23 +12,11 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if authManager.isLoading {
-                LoadingView()
-            } else if authManager.isAuthenticated {
+            if authManager.isAuthenticated {
                 DanceMenuView()
             } else {
-                SignUpView()
+                SignInView()
             }
-        }
-    }
-}
-
-struct LoadingView: View {
-    var body: some View {
-        VStack {
-            ProgressView()
-            Text("Loading...")
-                .padding(.top)
         }
     }
 }

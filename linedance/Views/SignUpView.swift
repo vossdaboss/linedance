@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @StateObject private var authManager = AuthenticationManager()
+    @Environment(\.dismiss) private var dismiss
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
-    @State private var isShowingMainApp = false
     @State private var showingError = false
     @State private var errorMessage = ""
     
@@ -56,28 +57,11 @@ struct SignUpView: View {
             }
             .padding(.horizontal)
             
-            // Social Sign In Options
-            VStack(spacing: 16) {
-                Text("Or sign up with")
-                    .foregroundColor(.gray)
-                
-                HStack(spacing: 20) {
-                    SocialSignInButton(image: "applelogo", text: "Apple") {
-                        // Handle Apple sign in
-                    }
-                    
-                    SocialSignInButton(image: "envelope.fill", text: "Google") {
-                        // Handle Google sign in
-                    }
-                }
-            }
-            .padding(.top)
-            
             Spacer()
             
             // Already have account link
             Button(action: {
-                // Handle navigation to sign in
+                dismiss()
             }) {
                 Text("Already have an account? ")
                     .foregroundColor(.gray) +
@@ -91,54 +75,20 @@ struct SignUpView: View {
         } message: {
             Text(errorMessage)
         }
-        .fullScreenCover(isPresented: $isShowingMainApp) {
-            DanceMenuView()
-        }
     }
     
     private func signUp() {
-        // Validate inputs
-        guard !email.isEmpty else {
-            showError("Please enter your email")
-            return
-        }
-        
-        guard !password.isEmpty else {
-            showError("Please enter a password")
-            return
-        }
-        
         guard password == confirmPassword else {
-            showError("Passwords don't match")
+            errorMessage = "Passwords don't match"
+            showingError = true
             return
         }
         
-        // TODO: Implement actual sign up logic
-        isShowingMainApp = true
-    }
-    
-    private func showError(_ message: String) {
-        errorMessage = message
-        showingError = true
-    }
-}
-
-struct SocialSignInButton: View {
-    let image: String
-    let text: String
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Image(systemName: image)
-                Text(text)
-            }
-            .foregroundColor(.primary)
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+        do {
+            try authManager.signUp(email: email, password: password)
+        } catch {
+            errorMessage = error.localizedDescription
+            showingError = true
         }
     }
 } 

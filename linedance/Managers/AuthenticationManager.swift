@@ -1,30 +1,11 @@
 import SwiftUI
-import FirebaseAuth
-import AuthenticationServices
 
 class AuthenticationManager: ObservableObject {
     @Published var isAuthenticated = false
-    @Published var isLoading = true
-    @Published var currentUser: User?
-    
-    private var authStateHandler: AuthStateDidChangeListenerHandle?
-    
-    init() {
-        authStateHandler = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-            self?.currentUser = user
-            self?.isAuthenticated = user != nil
-            self?.isLoading = false
-        }
-    }
-    
-    deinit {
-        if let handler = authStateHandler {
-            Auth.auth().removeStateDidChangeListener(handler)
-        }
-    }
+    @Published var isLoading = false
     
     // Email/Password Authentication
-    func signUp(email: String, password: String) async throws {
+    func signUp(email: String, password: String) throws {
         guard isValidEmail(email) else {
             throw AuthError.invalidEmail
         }
@@ -33,35 +14,25 @@ class AuthenticationManager: ObservableObject {
             throw AuthError.weakPassword
         }
         
-        try await Auth.auth().createUser(withEmail: email, password: password)
+        // For now, just authenticate if validation passes
+        isAuthenticated = true
     }
     
-    func signIn(email: String, password: String) async throws {
-        try await Auth.auth().signIn(withEmail: email, password: password)
-    }
-    
-    func signOut() throws {
-        try Auth.auth().signOut()
-    }
-    
-    // Social Authentication
-    func signInWithApple() async throws {
-        let helper = SignInWithAppleHelper()
-        let tokens = try await helper.startSignInWithAppleFlow()
+    func signIn(email: String, password: String) throws {
+        guard isValidEmail(email) else {
+            throw AuthError.invalidEmail
+        }
         
-        // Create the OAuth credential using the non-deprecated method
-        let credential = OAuthProvider.credential(
-            providerID: AuthProviderID.apple,
-            idToken: tokens.token,
-            accessToken: nil
-        )
+        guard isValidPassword(password) else {
+            throw AuthError.weakPassword
+        }
         
-        try await Auth.auth().signIn(with: credential)
+        // For now, just authenticate if validation passes
+        isAuthenticated = true
     }
     
-    // Google Sign In will be implemented after adding dependencies
-    func signInWithGoogle() async throws {
-        throw AuthError.configurationError
+    func signOut() {
+        isAuthenticated = false
     }
     
     // Validation
@@ -82,8 +53,6 @@ class AuthenticationManager: ObservableObject {
 enum AuthError: LocalizedError {
     case invalidEmail
     case weakPassword
-    case invalidCredential
-    case configurationError
     
     var errorDescription: String? {
         switch self {
@@ -91,10 +60,6 @@ enum AuthError: LocalizedError {
             return "Please enter a valid email address"
         case .weakPassword:
             return "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number"
-        case .invalidCredential:
-            return "Invalid credentials"
-        case .configurationError:
-            return "This feature is not available right now"
         }
     }
 } 
